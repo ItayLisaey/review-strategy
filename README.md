@@ -13,6 +13,13 @@ A CLI tool that analyzes GitHub pull requests and generates an optimal file revi
   - Test files last
 - 🎯 Generates review flags based on file patterns
 - 💾 Saves recent PRs and default repository for quick access
+- 🌐 **Interactive visual dependency graph** with:
+  - Color-coded nodes by file type
+  - Hierarchical layout showing dependencies
+  - Click-to-focus on files
+  - Review order sidebar
+  - Automatic browser opening
+  - Graceful shutdown with cleanup
 
 ## Installation
 
@@ -32,31 +39,64 @@ bun install
 
 ## Usage
 
-### Direct PR Analysis
+### Direct PR Analysis with Visual Graph
+
 ```bash
 bun run start <PR-URL>
 ```
 
 Example:
+
 ```bash
 bun run start https://github.com/vercel/next.js/pull/59000
 ```
 
+This will:
+
+1. Show a brief analysis summary in the terminal
+2. Generate a temporary HTML file with an interactive dependency graph
+3. Start a local server on port 49158 (default)
+4. Open the graph in your browser automatically
+5. Clean up the temporary file when you press Ctrl+C
+
+The visual interface features:
+
+- **Professional Layout**: Main graph area with right sidebar
+- **Smart Ordering**: Files ordered by dependency hierarchy (parents → children), then alphabetical
+- **Informative Nodes**: Each node shows filename, path, and +/- line changes
+- **Interactive Review**: Click nodes to zoom/focus, check off completed reviews
+- **Progress Tracking**: Visual progress bar showing review completion
+
 ### Interactive Mode
+
 ```bash
 bun run start
 ```
 
 This will prompt you to:
+
 - Browse PRs by repository
 - Enter a PR URL manually
 - Select from recent PRs
+
+### CLI-Only Mode (No Visual Graph)
+
+```bash
+bun run start <PR-URL> --no-visual
+```
+
+### Custom Port
+
+```bash
+bun run start <PR-URL> --port 8080
+```
 
 ## Configuration
 
 The tool stores configuration in `~/.config/pr-review-strategy/config.json` following the XDG Base Directory specification.
 
 Configuration includes:
+
 - `recentPRs`: List of recently analyzed PRs
 - `defaultRepo`: Default repository for quick PR selection
 
@@ -87,16 +127,19 @@ src/
 ## Development
 
 ### Type Checking
+
 ```bash
 bun run typecheck
 ```
 
 ### Development Mode
+
 ```bash
 bun run dev
 ```
 
 ### Build Executable
+
 ```bash
 bun run build
 ```

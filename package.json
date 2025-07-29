@@ -23,11 +23,16 @@
     "@babel/parser": "^7.28.0",
     "@babel/traverse": "^7.28.0",
     "@types/babel__traverse": "^7.20.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/inquirer": "^9.0.8",
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
     "graphlib": "^2.1.8",
     "inquirer": "^12.9.0",
+    "open": "^10.1.0",
     "ora": "^8.2.0"
   }
 }
