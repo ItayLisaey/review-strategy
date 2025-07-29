@@ -1,0 +1,33 @@
+{
+  "name": "review-strategy",
+  "module": "src/cli/index.ts",
+  "type": "module",
+  "bin": {
+    "pr-review-strategy": "./src/cli/index.ts"
+  },
+  "scripts": {
+    "start": "bun run src/cli/index.ts",
+    "build": "bun build src/cli/index.ts --compile --outfile pr-review-strategy",
+    "dev": "bun run src/cli/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/graphlib": "^2.1.12",
+    "@types/node": "^24.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@types/babel__traverse": "^7.20.7",
+    "@types/inquirer": "^9.0.8",
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "graphlib": "^2.1.8",
+    "inquirer": "^12.9.0",
+    "ora": "^8.2.0"
+  }
+}
