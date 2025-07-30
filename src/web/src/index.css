@@ -124,11 +124,22 @@ body {
   --tw-ring-color: hsl(var(--ring) / 0.5);
 }
 
-/* High contrast focus states */
-*:focus-visible {
+/* High contrast focus states - exclude ReactFlow elements */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
   border-radius: calc(var(--radius) - 2px);
+}
+
+/* Ensure ReactFlow elements don't get interfering focus styles */
+.react-flow *:focus,
+.react-flow *:focus-visible {
+  outline: none !important;
 }
 
 /* Enhanced hover states */
