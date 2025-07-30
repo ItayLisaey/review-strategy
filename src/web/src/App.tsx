@@ -7,10 +7,19 @@ import type { DependencyGraphData } from "./types";
 
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-screen" style={{ background: 'hsl(var(--background))' }}>
+    <div
+      className="flex items-center justify-center h-screen"
+      style={{ background: "hsl(var(--background))" }}
+    >
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
-        <div className="text-lg" style={{ color: 'hsl(var(--muted-foreground))' }}>
+        <div
+          className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+          style={{ borderColor: "hsl(var(--primary))" }}
+        ></div>
+        <div
+          className="text-lg"
+          style={{ color: "hsl(var(--muted-foreground))" }}
+        >
           Loading dependency graph...
         </div>
       </div>
@@ -56,12 +65,18 @@ function App() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen" style={{ background: 'hsl(var(--background))' }}>
+      <div
+        className="flex items-center justify-center h-screen"
+        style={{ background: "hsl(var(--background))" }}
+      >
         <div className="text-center">
-          <div className="text-lg mb-2" style={{ color: 'hsl(var(--destructive))' }}>
+          <div
+            className="text-lg mb-2"
+            style={{ color: "hsl(var(--destructive))" }}
+          >
             Error loading dependency graph
           </div>
-          <div style={{ color: 'hsl(var(--muted-foreground))' }}>{error}</div>
+          <div style={{ color: "hsl(var(--muted-foreground))" }}>{error}</div>
         </div>
       </div>
     );
@@ -72,7 +87,10 @@ function App() {
   }
 
   return (
-    <div className="flex h-screen font-sans" style={{ background: 'hsl(var(--background))' }}>
+    <div
+      className="flex h-screen font-sans"
+      style={{ background: "hsl(var(--background))" }}
+    >
       {/* Main Graph Area */}
       <div className="flex-1 relative">
         <div
@@ -103,9 +121,15 @@ function App() {
       </div>
 
       {/* Sidebar */}
-      <div className="w-80 glass-strong border-l p-6 overflow-y-auto shadow-lab-lg" style={{ borderColor: 'hsl(var(--border))' }}>
+      <div
+        className="w-80 glass-strong border-l p-6 overflow-y-auto shadow-lab-lg"
+        style={{ borderColor: "hsl(var(--border))" }}
+      >
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-4" style={{ color: 'hsl(var(--foreground))' }}>
+          <h2
+            className="text-xl font-semibold mb-4"
+            style={{ color: "hsl(var(--foreground))" }}
+          >
             Files Review
           </h2>
           <ProgressBar
