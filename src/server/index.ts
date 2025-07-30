@@ -563,6 +563,112 @@ export async function createTemporaryHTML(
   await fs.writeFile(tempFilePath, htmlContent, "utf-8");
 }
 
+// Define Tailwind color palettes for branches
+const BRANCH_COLORS = [
+  { base: '#3b82f6', shades: ['#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af'] }, // blue
+  { base: '#10b981', shades: ['#34d399', '#10b981', '#059669', '#047857', '#065f46'] }, // emerald
+  { base: '#8b5cf6', shades: ['#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9', '#5b21b6'] }, // purple
+  { base: '#f59e0b', shades: ['#fbbf24', '#f59e0b', '#d97706', '#b45309', '#92400e'] }, // amber
+  { base: '#f43f5e', shades: ['#fb7185', '#f43f5e', '#e11d48', '#be123c', '#9f1239'] }, // rose
+  { base: '#06b6d4', shades: ['#22d3ee', '#06b6d4', '#0891b2', '#0e7490', '#155e75'] }, // cyan
+  { base: '#ec4899', shades: ['#f472b6', '#ec4899', '#db2777', '#be185d', '#9d174d'] }, // pink
+];
+
+// Files that should be ignored as parent nodes (detached from their children)
+// These files often appear as roots but don't represent meaningful dependency relationships
+// Example: next.config.js might import many files but we don't want everything under it
+const IGNORE_PARENT_NODES = [
+  'next.config.js',
+  'next.config.mjs',
+  'next.config.ts',
+  'webpack.config.js',
+  'vite.config.js',
+  'vite.config.ts',
+  'rollup.config.js',
+  'jest.config.js',
+  'jest.config.ts',
+  '.eslintrc.js',
+  '.prettierrc.js',
+  'babel.config.js',
+  'tsconfig.json',
+  'package.json',
+  'tailwind.config.js',
+  'tailwind.config.ts',
+  'postcss.config.js',
+  'playwright.config.ts',
+  'vitest.config.ts',
+];
+
+// Identify branches and assign colors
+function identifyBranches(
+  nodes: Array<{ id: string; [key: string]: any }>,
+  edges: Array<{ from: string; to: string }>
+): Map<string, { branchId: string; level: number; color: string }> {
+  const branchInfo = new Map<string, { branchId: string; level: number; color: string }>();
+  const nodeMap = new Map(nodes.map(node => [node.id, node]));
+  
+  // Build adjacency lists
+  const children = new Map<string, string[]>();
+  const parents = new Map<string, string[]>();
+  
+  edges.forEach(edge => {
+    if (!children.has(edge.from)) children.set(edge.from, []);
+    children.get(edge.from)!.push(edge.to);
+    
+    if (!parents.has(edge.to)) parents.set(edge.to, []);
+    parents.get(edge.to)!.push(edge.from);
+  });
+  
+  // Find root nodes (no incoming edges)
+  const roots = nodes.filter(node => !parents.has(node.id) || parents.get(node.id)!.length === 0);
+  
+  // Assign branches starting from each root
+  let branchIndex = 0;
+  roots.forEach(root => {
+    const branchId = `branch-${branchIndex}`;
+    const colorPalette = BRANCH_COLORS[branchIndex % BRANCH_COLORS.length];
+    
+    // BFS to assign branch and levels
+    const queue: { nodeId: string; level: number }[] = [{ nodeId: root.id, level: 0 }];
+    const visited = new Set<string>();
+    
+    while (queue.length > 0) {
+      const { nodeId, level } = queue.shift()!;
+      if (visited.has(nodeId)) continue;
+      visited.add(nodeId);
+      
+      // Assign color based on level (darker as we go deeper)
+      const colorIndex = Math.min(level, colorPalette.shades.length - 1);
+      const color = colorPalette.shades[colorIndex];
+      
+      branchInfo.set(nodeId, { branchId, level, color });
+      
+      // Add children to queue
+      const nodeChildren = children.get(nodeId) || [];
+      nodeChildren.forEach(childId => {
+        if (!visited.has(childId)) {
+          queue.push({ nodeId: childId, level: level + 1 });
+        }
+      });
+    }
+    
+    branchIndex++;
+  });
+  
+  // Handle any unassigned nodes (shouldn't happen with proper graph)
+  nodes.forEach(node => {
+    if (!branchInfo.has(node.id)) {
+      branchInfo.set(node.id, {
+        branchId: 'branch-orphan',
+        level: 0,
+        color: '#6b7280' // gray
+      });
+    }
+  });
+  
+  return branchInfo;
+}
+
 export function convertToGraphData(
   strategy: ReviewStrategy,
   files: FileChange[],
@@ -626,32 +732,69 @@ export function convertToGraphData(
   });
 
   // Remove duplicate edges
-  const uniqueEdges = edges.filter(
+  let uniqueEdges = edges.filter(
     (edge, index, self) =>
       index === self.findIndex((e) => e.from === edge.from && e.to === edge.to)
   );
+  
+  // Filter out edges where the parent (from) node should be ignored
+  uniqueEdges = uniqueEdges.filter(edge => {
+    const parentFile = files.find(f => f.filename === edge.from);
+    if (!parentFile) return true;
+    
+    const parentFileName = parentFile.filename.split('/').pop() || '';
+    return !IGNORE_PARENT_NODES.includes(parentFileName);
+  });
 
-  // Create nodes with children count calculation
-  const nodes = files.map((file) => {
-    const childrenCount = calculateChildrenCount(file.filename, uniqueEdges);
+  // Create initial nodes
+  const initialNodes = files.map((file) => ({
+    id: file.filename,
+    label: file.filename.split("/").pop() || file.filename,
+    title: `${file.filename}\\nChanges: +${file.additions} -${file.deletions}`,
+    additions: file.additions,
+    deletions: file.deletions,
+    path: file.filename,
+    childrenCount: calculateChildrenCount(file.filename, uniqueEdges),
+  }));
 
+  // Identify branches and assign colors
+  const branchInfo = identifyBranches(initialNodes, uniqueEdges);
+  
+  // Build parent-child relationships
+  const childrenMap = new Map<string, string[]>();
+  const parentMap = new Map<string, string | null>();
+  
+  uniqueEdges.forEach(edge => {
+    if (!childrenMap.has(edge.from)) childrenMap.set(edge.from, []);
+    childrenMap.get(edge.from)!.push(edge.to);
+    parentMap.set(edge.to, edge.from);
+  });
+  
+  // Create nodes with branch information
+  const nodes = initialNodes.map((node) => {
+    const info = branchInfo.get(node.id)!;
     return {
-      id: file.filename,
-      label: file.filename.split("/").pop() || file.filename,
-      title: `${file.filename}\\nChanges: +${file.additions} -${file.deletions}`,
-      additions: file.additions,
-      deletions: file.deletions,
-      path: file.filename,
-      childrenCount,
+      ...node,
+      branchId: info.branchId,
+      branchColor: info.color,
+      level: info.level,
+      children: childrenMap.get(node.id) || [],
+      parent: parentMap.get(node.id) || null,
     };
   });
 
-  // Sort nodes by children count (most children first), then alphabetically
+  // Sort nodes by branch, then level, then alphabetically
   const sortedNodes = nodes.sort((a, b) => {
-    if (a.childrenCount !== b.childrenCount) {
-      return b.childrenCount - a.childrenCount; // Higher children count first
+    // First by branch
+    if (a.branchId !== b.branchId) {
+      return a.branchId.localeCompare(b.branchId);
     }
-    return a.label.localeCompare(b.label); // Alphabetical within same children count
+    // Then by level (root first)
+    if (a.level !== b.level) {
+      return a.level - b.level;
+    }
+    // Then alphabetically
+    return a.label.localeCompare(b.label);
   });
 
   return {

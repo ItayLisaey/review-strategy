@@ -4,8 +4,8 @@
 
 :root {
   /* Gray Lab Theme - Dark Mode Only (High Contrast) */
-  --background: 225 15% 6%;
-  /* Very deep gray base for better contrast */
+  --background: 225 15% 11%;
+  /* Deep gray base with better visibility */
   --foreground: 220 15% 92%;
   /* High contrast light text */
   --card: 225 15% 9%;

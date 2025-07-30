@@ -7,6 +7,12 @@ export interface GraphNode {
   deletions: number;
   path: string;
   childrenCount: number;
+  // Branch information
+  branchId?: string;
+  branchColor?: string;
+  level?: number;
+  children?: string[];
+  parent?: string | null;
 }
 
 export interface GraphEdge {

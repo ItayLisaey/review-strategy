@@ -10,12 +10,25 @@ export const getLayoutedElements = (
   direction = "TB"
 ) => {
   const isHorizontal = direction === "LR";
+  
+  // Group nodes by branch for better layout
+  const nodesByBranch = new Map<string, Node[]>();
+  nodes.forEach(node => {
+    const branchId = node.data.branchId || 'default';
+    if (!nodesByBranch.has(branchId)) {
+      nodesByBranch.set(branchId, []);
+    }
+    nodesByBranch.get(branchId)!.push(node);
+  });
+  
+  // Configure dagre with more spacing between branches
   dagreGraph.setGraph({
     rankdir: direction,
-    nodesep: 50,
-    ranksep: 100,
-    marginx: 20,
-    marginy: 20,
+    nodesep: 80,     // Increased horizontal spacing
+    ranksep: 120,    // Increased vertical spacing
+    marginx: 50,
+    marginy: 50,
+    ranker: 'tight-tree', // Better for tree-like structures
   });
 
   nodes.forEach((node) => {

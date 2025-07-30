@@ -50,16 +50,24 @@ export interface OpenPRMinimal {
 }
 
 // Types for the dependency graph visualization
+export interface GraphNode {
+  id: string;
+  label: string;
+  title: string;
+  additions: number;
+  deletions: number;
+  path: string;
+  childrenCount: number;
+  // Branch information
+  branchId?: string;
+  branchColor?: string;
+  level?: number;
+  children?: string[];
+  parent?: string | null;
+}
+
 export interface DependencyGraphData {
-  nodes: Array<{
-    id: string;
-    label: string;
-    title: string;
-    additions: number;
-    deletions: number;
-    path: string;
-    childrenCount: number;
-  }>;
+  nodes: GraphNode[];
   edges: Array<{
     from: string;
     to: string;

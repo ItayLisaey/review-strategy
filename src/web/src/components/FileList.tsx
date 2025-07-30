@@ -16,27 +16,34 @@ export function FileList({
   onToggleCheck,
   onFileSelect,
 }: Props) {
+  // Only show root nodes (files without parents) at the top level
+  const rootFiles = files.filter(file => !file.parent);
+  
   return (
     <div className="space-y-2">
-      {files.map((file) => (
+      {rootFiles.map((file) => (
         <FileItem
           key={file.id}
           file={file}
+          allFiles={files}
           isChecked={checkedFiles.has(file.id)}
           isHighlighted={file.id === highlightedFile}
-          onToggleCheck={() => onToggleCheck(file.id)}
-          onSelect={() => {
-            onFileSelect(file.id);
+          checkedFiles={checkedFiles}
+          highlightedFile={highlightedFile}
+          onToggleCheck={onToggleCheck}
+          onSelect={(fileId) => {
+            onFileSelect(fileId);
             // Scroll into view when selected
             setTimeout(() => {
               const element = document.querySelector(
-                `[data-filename="${file.id}"]`
+                `[data-filename="${fileId}"]`
               );
               if (element) {
                 element.scrollIntoView({ behavior: "smooth", block: "center" });
               }
             }, 100);
           }}
+          level={0}
         />
       ))}
     </div>

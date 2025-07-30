@@ -9,11 +9,17 @@ interface FileNodeData {
   deletions: number;
   childrenCount: number;
   isHighlighted: boolean;
+  branchColor?: string;
+  level?: number;
 }
 
 export const FileNode = memo(({ data }: NodeProps<FileNodeData>) => {
-  const { label, path, additions, deletions, childrenCount, isHighlighted } =
+  const { label, path, additions, deletions, childrenCount, isHighlighted, branchColor, level } =
     data;
+
+  // Determine opacity based on level (more transparent for deeper levels)
+  const nodeOpacity = level !== undefined ? Math.max(0.15, 0.25 - (level * 0.03)) : 0.15;
+  const borderOpacity = level !== undefined ? Math.max(0.25, 0.4 - (level * 0.05)) : 0.25;
 
   return (
     <>
@@ -22,28 +28,31 @@ export const FileNode = memo(({ data }: NodeProps<FileNodeData>) => {
         type="target"
         position={Position.Top}
         style={{
-          background: "rgba(160, 174, 192, 0.6)",
+          background: branchColor || "rgba(160, 174, 192, 0.6)",
+          opacity: 0.8,
           border: "none",
-          width: 8,
-          height: 8,
+          width: 10,
+          height: 10,
         }}
       />
 
-      {/* Node content that matches sidebar FileItem */}
+      {/* Node content with branch colors */}
       <div
         className={`
-          bg-slate-200/5 border border-slate-200/10 rounded-xl p-3
-          backdrop-blur-sm min-w-[140px] max-w-[200px] min-h-[80px]
+          rounded-xl p-3 backdrop-blur-sm min-w-[140px] max-w-[200px] min-h-[80px]
           transition-all duration-300 cursor-pointer
-          hover:bg-slate-200/8 hover:border-slate-200/20 hover:shadow-lg
-          ${
-            isHighlighted
-              ? "bg-green-500/15 border-green-500/40 ring-2 ring-green-500/20 shadow-lg"
-              : ""
-          }
+          ${isHighlighted ? "ring-2 shadow-lg" : ""}
         `}
         style={{
           fontFamily: "Inter, system-ui, sans-serif",
+          backgroundColor: branchColor ? `${branchColor}${Math.round(nodeOpacity * 255).toString(16).padStart(2, '0')}` : 'rgba(226, 232, 240, 0.05)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: branchColor ? `${branchColor}${Math.round(borderOpacity * 255).toString(16).padStart(2, '0')}` : 'rgba(226, 232, 240, 0.1)',
+          ...(isHighlighted ? {
+            borderColor: branchColor || '#10b981',
+            boxShadow: `0 0 0 4px ${branchColor || '#10b981'}20`,
+          } : {}),
         }}
       >
         {/* File name */}
@@ -71,10 +80,11 @@ export const FileNode = memo(({ data }: NodeProps<FileNodeData>) => {
         type="source"
         position={Position.Bottom}
         style={{
-          background: "rgba(160, 174, 192, 0.6)",
+          background: branchColor || "rgba(160, 174, 192, 0.6)",
+          opacity: 0.8,
           border: "none",
-          width: 8,
-          height: 8,
+          width: 10,
+          height: 10,
         }}
       />
     </>

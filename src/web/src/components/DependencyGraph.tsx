@@ -33,6 +33,9 @@ export function DependencyGraph({
   const { fitView } = useReactFlow();
   // Convert data to React Flow format with automatic layout
   const { initialNodes, initialEdges } = useMemo(() => {
+    // Create a map for quick node lookup
+    const nodeMap = new Map(data.nodes.map(n => [n.id, n]));
+    
     const nodes: Node[] = data.nodes.map((node, index) => ({
       id: node.id,
       type: "fileNode",
@@ -44,20 +47,30 @@ export function DependencyGraph({
         deletions: node.deletions,
         childrenCount: node.childrenCount,
         isHighlighted: node.id === highlightedFile,
+        branchColor: node.branchColor,
+        branchId: node.branchId,
+        level: node.level,
       },
     }));
 
-    const edges: Edge[] = data.edges.map((edge, index) => ({
-      id: `edge-${index}`,
-      source: edge.from,
-      target: edge.to,
-      type: "smoothstep",
-      style: {
-        stroke: "rgba(160, 174, 192, 0.6)",
-        strokeWidth: 2,
-      },
-      animated: false,
-    }));
+    const edges: Edge[] = data.edges.map((edge, index) => {
+      // Get the source node's branch color for the edge
+      const sourceNode = nodeMap.get(edge.from);
+      const edgeColor = sourceNode?.branchColor || "rgba(160, 174, 192, 0.6)";
+      
+      return {
+        id: `edge-${index}`,
+        source: edge.from,
+        target: edge.to,
+        type: "smoothstep",
+        style: {
+          stroke: edgeColor,
+          strokeWidth: 2,
+          opacity: 0.6,
+        },
+        animated: false,
+      };
+    });
 
     // Apply automatic layout
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(

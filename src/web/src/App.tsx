@@ -122,20 +122,61 @@ function App() {
 
       {/* Sidebar */}
       <div
-        className="w-80 glass-strong border-l p-6 overflow-y-auto shadow-lab-lg"
+        className="w-96 glass-strong border-l p-6 overflow-y-auto shadow-lab-lg"
         style={{ borderColor: "hsl(var(--border))" }}
       >
         <div className="mb-6">
           <h2
-            className="text-xl font-semibold mb-4"
+            className="text-xl font-semibold mb-2"
             style={{ color: "hsl(var(--foreground))" }}
           >
             Files Review
           </h2>
+          
+          {/* Branch Summary */}
+          <div className="mb-4">
+            <p className="text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>
+              {(() => {
+                const branches = new Set(graphData.nodes.map(n => n.branchId).filter(Boolean));
+                return `${branches.size} change branch${branches.size !== 1 ? 'es' : ''} detected`;
+              })()}
+            </p>
+          </div>
+          
           <ProgressBar
             current={checkedFiles.size}
             total={graphData.nodes.length}
           />
+          
+          {/* Controls */}
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => {
+                // Expand all logic - would need to be implemented with state management
+                console.log("Expand all");
+              }}
+              className="text-xs px-3 py-1 rounded-md transition-colors"
+              style={{
+                backgroundColor: "hsl(var(--secondary) / 0.2)",
+                color: "hsl(var(--secondary-foreground))",
+              }}
+            >
+              Expand All
+            </button>
+            <button
+              onClick={() => {
+                // Collapse all logic
+                console.log("Collapse all");
+              }}
+              className="text-xs px-3 py-1 rounded-md transition-colors"
+              style={{
+                backgroundColor: "hsl(var(--secondary) / 0.2)",
+                color: "hsl(var(--secondary-foreground))",
+              }}
+            >
+              Collapse All
+            </button>
+          </div>
         </div>
 
         <FileList
