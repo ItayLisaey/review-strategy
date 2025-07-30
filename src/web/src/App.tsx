@@ -7,10 +7,10 @@ import type { DependencyGraphData } from "./types";
 
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-600 to-slate-700">
+    <div className="flex items-center justify-center h-screen" style={{ background: 'hsl(var(--background))' }}>
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-200 mx-auto mb-4"></div>
-        <div className="text-slate-300 text-lg">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'hsl(var(--primary))' }}></div>
+        <div className="text-lg" style={{ color: 'hsl(var(--muted-foreground))' }}>
           Loading dependency graph...
         </div>
       </div>
@@ -56,12 +56,12 @@ function App() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-600 to-slate-700">
+      <div className="flex items-center justify-center h-screen" style={{ background: 'hsl(var(--background))' }}>
         <div className="text-center">
-          <div className="text-red-400 text-lg mb-2">
+          <div className="text-lg mb-2" style={{ color: 'hsl(var(--destructive))' }}>
             Error loading dependency graph
           </div>
-          <div className="text-slate-400">{error}</div>
+          <div style={{ color: 'hsl(var(--muted-foreground))' }}>{error}</div>
         </div>
       </div>
     );
@@ -72,14 +72,14 @@ function App() {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-600 to-slate-700 font-sans">
+    <div className="flex h-screen font-sans" style={{ background: 'hsl(var(--background))' }}>
       {/* Main Graph Area */}
       <div className="flex-1 relative">
         <div
           className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 1px 1px, rgba(226, 232, 240, 0.12) 1px, transparent 0)",
+              "radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.3) 1px, transparent 0)",
             backgroundSize: "20px 20px",
             backgroundAttachment: "fixed",
           }}
@@ -88,7 +88,7 @@ function App() {
           className="absolute inset-0 opacity-10 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 1px 1px, rgba(226, 232, 240, 0.06) 1px, transparent 0)",
+              "radial-gradient(circle at 1px 1px, hsl(var(--border) / 0.15) 1px, transparent 0)",
             backgroundSize: "40px 40px",
             backgroundAttachment: "fixed",
           }}
@@ -103,9 +103,9 @@ function App() {
       </div>
 
       {/* Sidebar */}
-      <div className="w-80 bg-slate-800/85 backdrop-blur-lg border-l border-slate-200/10 p-6 overflow-y-auto shadow-2xl">
+      <div className="w-80 glass-strong border-l p-6 overflow-y-auto shadow-lab-lg" style={{ borderColor: 'hsl(var(--border))' }}>
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-slate-200 mb-4">
+          <h2 className="text-xl font-semibold mb-4" style={{ color: 'hsl(var(--foreground))' }}>
             Files Review
           </h2>
           <ProgressBar

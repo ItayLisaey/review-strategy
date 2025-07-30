@@ -120,13 +120,13 @@
   --border-radius-lg: var(--radius);
   --border-radius-md: calc(var(--radius) - 2px);
   --border-radius-sm: calc(var(--radius) - 4px);
-  --font-sans: var(--font-montserrat);
+  --font-sans: 'Montserrat', system-ui, -apple-system, sans-serif;
 }
 
 body {
   background: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: var(--font-montserrat), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   position: relative;
   overflow-x: hidden;
 }
