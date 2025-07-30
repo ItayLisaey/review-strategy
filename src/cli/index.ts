@@ -11,6 +11,7 @@ import { checkGHAuth, fetchPRInfo, parsePRUrl } from "../core/github";
 import {
   convertToGraphData,
   createTemporaryHTML,
+  startReactServer,
   startTempServer,
 } from "../server";
 import { selectPR, setupGHAuth } from "./prompts";
@@ -29,6 +30,10 @@ async function main(): Promise<void> {
         "49158"
       )
       .option("--no-visual", "Skip visual graph, show only CLI output")
+      .option(
+        "--html",
+        "Use legacy HTML visualization instead of React (for testing)"
+      )
       .parse();
 
     const options = program.opts();
@@ -87,17 +92,28 @@ async function main(): Promise<void> {
       console.log(chalk.blue("∎ Generating dependency graph visualization..."));
 
       try {
-        // Create temporary HTML file
-        const tempFilePath = path.join(
-          os.tmpdir(),
-          `pr-graph-${Date.now()}.html`
-        );
         const graphData = convertToGraphData(strategy, files, title, prUrl);
-        await createTemporaryHTML(graphData, tempFilePath);
-
-        // Start server
         const port = parseInt(options.port);
-        const { server, cleanup } = await startTempServer(tempFilePath, port);
+
+        let server: any;
+        let cleanup: () => Promise<void>;
+
+        if (options.html) {
+          // Legacy HTML visualization
+          const tempFilePath = path.join(
+            os.tmpdir(),
+            `pr-graph-${Date.now()}.html`
+          );
+          await createTemporaryHTML(graphData, tempFilePath);
+          const result = await startTempServer(tempFilePath, port);
+          server = result.server;
+          cleanup = result.cleanup;
+        } else {
+          // New React visualization
+          const result = await startReactServer(graphData, port);
+          server = result.server;
+          cleanup = result.cleanup;
+        }
 
         console.log(
           chalk.green(`∎ Visualization available at http://localhost:${port}`)

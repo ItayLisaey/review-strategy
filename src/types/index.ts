@@ -35,7 +35,7 @@ export interface FileDependencyInfo {
   filename: string;
   imports: string[];
   exports: string[];
-  fileType: 'typescript' | 'javascript' | 'json' | 'css' | 'other';
+  fileType: "typescript" | "javascript" | "json" | "css" | "other";
   isTest: boolean;
   isConfig: boolean;
 }
@@ -47,4 +47,21 @@ export interface OpenPRMinimal {
   author: string;
   repo: string;
   isDraft: boolean;
+}
+
+// Types for the dependency graph visualization
+export interface DependencyGraphData {
+  nodes: Array<{
+    id: string;
+    label: string;
+    title: string;
+    additions: number;
+    deletions: number;
+    path: string;
+    childrenCount: number;
+  }>;
+  edges: Array<{
+    from: string;
+    to: string;
+  }>;
 }

@@ -2,26 +2,19 @@ import express, { type Request, type Response } from "express";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import type { FileChange, ReviewStrategy } from "../types";
+import type {
+  DependencyGraphData,
+  FileChange,
+  ReviewStrategy,
+} from "../types/index.js";
+
+// Re-export the React server function
+export { startReactServer } from "./react";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-interface DependencyGraphData {
-  nodes: Array<{
-    id: string;
-    label: string;
-    title: string;
-    additions: number;
-    deletions: number;
-    path: string;
-    childrenCount: number;
-  }>;
-  edges: Array<{
-    from: string;
-    to: string;
-  }>;
-}
+// DependencyGraphData is now imported from ../types
 
 function calculateChildrenCount(
   nodeId: string,

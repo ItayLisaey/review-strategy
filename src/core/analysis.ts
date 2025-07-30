@@ -2,7 +2,7 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import * as graphlib from "graphlib";
 import ora from "ora";
-import type { FileChange, PRInfo, ReviewStrategy } from "../types";
+import type { FileChange, PRInfo, ReviewStrategy } from "../types/index.js";
 
 // Parse JavaScript/TypeScript file to extract imports
 function parseFileForImports(content: string, filename: string): string[] {

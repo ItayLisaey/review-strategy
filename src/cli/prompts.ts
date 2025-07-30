@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 import inquirer from "inquirer";
 import { saveConfig } from "../config";
 import { fetchPRsForRepo, fetchRepos, parsePRUrl } from "../core/github";
-import type { Config } from "../types";
+import type { Config } from "../types/index.js";
 
 export async function setupGHAuth(): Promise<void> {
   console.log(chalk.yellow("\n∎ GitHub CLI Authentication Required\n"));
@@ -150,7 +150,10 @@ export async function selectPR(config: Config): Promise<string> {
         type: "list",
         name: "prUrl",
         message: "Select a recent PR:",
-        choices: config.recentPRs.map((pr) => ({ name: pr, value: pr })),
+        choices: config.recentPRs.map((pr: string) => ({
+          name: pr,
+          value: pr,
+        })),
       },
     ]);
     return prUrl;
