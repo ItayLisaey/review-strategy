@@ -3,98 +3,50 @@
 @tailwind utilities;
 
 :root {
-  /* Gray Lab Theme - Light Mode */
-  --background: 225 15% 96%;
-  /* Light gray base */
-  --foreground: 220 15% 15%;
-  /* Dark gray text (not pure black) */
-  --card: 225 15% 96%;
-  /* Glass panel base */
-  --card-foreground: 220 15% 15%;
-  /* Card text */
-  --popover: 225 15% 98%;
-  /* Elevated glass */
-  --popover-foreground: 220 15% 15%;
-  /* Popover text */
-  --primary: 210 40% 45%;
-  /* Lab blue accent */
-  --primary-foreground: 210 40% 98%;
-  /* Light on primary */
-  --secondary: 220 15% 92%;
-  /* Subtle secondary */
-  --secondary-foreground: 220 15% 20%;
-  /* Secondary text */
-  --muted: 220 15% 90%;
-  /* Muted backgrounds */
-  --muted-foreground: 220 10% 40%;
-  /* Muted text */
-  --accent: 220 15% 88%;
-  /* Accent backgrounds */
-  --accent-foreground: 220 15% 15%;
-  /* Accent text */
-  --destructive: 0 65% 50%;
-  /* Error red */
-  --destructive-foreground: 210 40% 98%;
-  /* Light on destructive */
-  --border: 220 15% 80%;
-  /* Subtle borders */
-  --input: 220 15% 85%;
-  /* Input borders */
-  --ring: 210 40% 45%;
-  /* Focus rings */
-  --glass: 225 15% 96% / 0.3;
-  /* Glass panel overlay */
-  --glass-border: 220 15% 85% / 0.5;
-  /* Glass borders */
+  /* Gray Lab Theme - Dark Mode Only (High Contrast) */
+  --background: 225 15% 6%;
+  /* Very deep gray base for better contrast */
+  --foreground: 220 15% 92%;
+  /* High contrast light text */
+  --card: 225 15% 9%;
+  /* Dark glass panel with more contrast */
+  --card-foreground: 220 15% 92%;
+  /* High contrast card text */
+  --popover: 225 15% 11%;
+  /* Elevated dark glass */
+  --popover-foreground: 220 15% 92%;
+  /* High contrast popover text */
+  --primary: 210 100% 65%;
+  /* Bright, accessible lab blue */
+  --primary-foreground: 220 15% 8%;
+  /* Dark on primary for contrast */
+  --secondary: 220 15% 14%;
+  /* Enhanced dark secondary */
+  --secondary-foreground: 220 15% 88%;
+  /* High contrast secondary text */
+  --muted: 220 15% 10%;
+  /* Dark muted background */
+  --muted-foreground: 220 10% 70%;
+  /* Enhanced muted text contrast */
+  --accent: 220 15% 16%;
+  /* Enhanced accent background */
+  --accent-foreground: 220 15% 92%;
+  /* High contrast accent text */
+  --destructive: 0 84% 68%;
+  /* Bright, accessible error red */
+  --destructive-foreground: 220 15% 96%;
+  /* Very light on destructive */
+  --border: 220 15% 22%;
+  /* More visible dark borders */
+  --input: 220 15% 16%;
+  /* Enhanced input borders */
+  --ring: 210 100% 65%;
+  /* Bright, visible focus rings */
+  --glass: 225 15% 9% / 0.85;
+  /* Enhanced dark glass overlay */
+  --glass-border: 220 15% 28% / 0.6;
+  /* More visible glass borders */
   --radius: 0.75rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Gray Lab Theme - Dark Mode */
-    --background: 225 15% 8%;
-    /* Deep gray base */
-    --foreground: 220 15% 85%;
-    /* Light gray text (not pure white) */
-    --card: 225 15% 10%;
-    /* Dark glass panel */
-    --card-foreground: 220 15% 85%;
-    /* Card text */
-    --popover: 225 15% 12%;
-    /* Elevated dark glass */
-    --popover-foreground: 220 15% 85%;
-    /* Popover text */
-    --primary: 210 40% 55%;
-    /* Brighter lab blue */
-    --primary-foreground: 220 15% 8%;
-    /* Dark on primary */
-    --secondary: 220 15% 15%;
-    /* Dark secondary */
-    --secondary-foreground: 220 15% 80%;
-    /* Secondary text */
-    --muted: 220 15% 12%;
-    /* Dark muted */
-    --muted-foreground: 220 10% 55%;
-    /* Muted text */
-    --accent: 220 15% 18%;
-    /* Dark accent */
-    --accent-foreground: 220 15% 85%;
-    /* Accent text */
-    --destructive: 0 65% 60%;
-    /* Brighter error red */
-    --destructive-foreground: 210 40% 98%;
-    /* Light on destructive */
-    --border: 220 15% 20%;
-    /* Subtle dark borders */
-    --input: 220 15% 18%;
-    /* Dark input borders */
-    --ring: 210 40% 55%;
-    /* Bright focus rings */
-    --glass: 225 15% 10% / .8;
-    /* Dark glass overlay */
-    --glass-border: 220 15% 25% / 0.5;
-    /* Dark glass borders */
-  }
 }
 
 @theme inline {
@@ -137,6 +89,7 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid hsla(var(--glass-border));
+  box-shadow: 0 2px 8px hsla(var(--background), 0.4);
 }
 
 .glass-strong {
@@ -144,7 +97,7 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid hsla(var(--glass-border));
-  box-shadow: 0 4px 12px hsla(var(--foreground), 0.05);
+  box-shadow: 0 4px 16px hsla(var(--background), 0.6);
 }
 
 /* Subtle borders everywhere */
@@ -155,20 +108,35 @@ body {
 /* Lab-like subtle shadows */
 .shadow-lab {
   box-shadow:
-    0 1px 3px hsla(var(--foreground), 0.08),
-    0 1px 2px hsla(var(--foreground), 0.06);
+    0 2px 4px hsla(var(--background), 0.3),
+    0 1px 2px hsla(var(--background), 0.2);
 }
 
 .shadow-lab-lg {
   box-shadow:
-    0 4px 6px hsla(var(--foreground), 0.07),
-    0 2px 4px hsla(var(--foreground), 0.06),
-    0 1px 3px hsla(var(--foreground), 0.08);
+    0 8px 16px hsla(var(--background), 0.4),
+    0 4px 8px hsla(var(--background), 0.3),
+    0 2px 4px hsla(var(--background), 0.2);
 }
 
-/* Remove harsh focus outlines */
+/* Enhanced focus and accessibility */
 .ring-lab {
-  --tw-ring-color: hsl(var(--ring) / 0.3);
+  --tw-ring-color: hsl(var(--ring) / 0.5);
+}
+
+/* High contrast focus states */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: calc(var(--radius) - 2px);
+}
+
+/* Enhanced hover states */
+.hover-enhance:hover {
+  background: hsla(var(--accent));
+  border-color: hsl(var(--border));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px hsla(var(--background), 0.3);
 }
 
 /* Custom slider styling for physics controls */
