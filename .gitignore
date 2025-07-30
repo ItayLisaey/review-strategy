@@ -173,3 +173,7 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Generated graph data files (contains PR data)
+graph-data.json
+src/web/public/graph-data.json
